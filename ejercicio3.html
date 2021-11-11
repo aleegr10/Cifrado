@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ejercicio3</title>
+    <script>
+        String.prototype.convierte = function () {
+            let cadena = this.toUpperCase();
+            let chars = {
+                "Á": "A", "É": "E", "Í": "I", "Ó": "O", "Ú": "U",
+                "À": "A", "È": "E", "Ì": "I", "Ò": "O", "Ù": "U", "Ü": "U"
+            }
+            let expr = /[ÁÀÉÈÍÌÓÒÚÙÜ]/ig;
+            return cadena.replace(expr, function (i) { return chars[i] });
+        }
+
+
+        let idiomas = [{ idioma: "Castellano", letras: "ABCDEFGHIJKLMNÑOPQRSTUVWXYZ" },
+        { idioma: "Ingles", letras: "ABCDEFGHIJKLMNOPQRSTUVWXYZ" }];
+
+        let letras = idiomas[0].letras;
+        console.log(letras);
+
+        onload = function () {
+            let salida = "";
+            for (let i = 0; i < idiomas.length; i++) {
+                salida += `<option value='${idiomas[i].letras}'>${idiomas[i].idioma}</option>`
+            }
+            document.getElementById("alfabeto").innerHTML = salida;
+            document.getElementById("rotar").max = letras.length - 1;
+            console.log(salida);
+        }
+
+        function descifrar() {
+            let texto = document.getElementById("texto").value.convierte().split("");
+            let rotar = document.getElementById("rotar").value;
+            salida = "";
+
+            for (let i = 0; i < texto.length; i++) {
+                let indiceLetra = letras.indexOf(texto[i]);
+                let nuevaLetra = texto[i];
+
+                if (indiceLetra != -1) {
+                    indiceLetra -= rotar;
+
+                    if (indiceLetra < 0) {
+                        indiceLetra += letras.length;
+                    }
+                    nuevaLetra = letras.charAt(indiceLetra);
+                }
+
+                salida += nuevaLetra;
+            }
+
+            document.getElementById("res").innerHTML = salida;
+        }
+
+        function ModificaAlfabeto(letrasNueva) {
+            letras = letrasNueva;
+            document.getElementById("rotar").max = (letras.length - 1).toString();
+            document.getElementById("rotar").value = "0";
+        }
+    </script>
+</head>
+
+<body>
+    <h1>Cifrado César</h1>
+    <h2>-Descifrar-</h2>
+    Alfabeto<select id="alfabeto" onchange="ModificaAlfabeto(this.value)">
+    </select><br>
+    Texto a descifrar <textarea id="texto" cols="20" rows="5"></textarea><br>
+    Nivel de rotado <input type="number" id="rotar" min="0" value="0"><br><br>
+
+    <button onclick="descifrar()">Descifrar</button><br><br>
+
+    <p id="res" style="color: red"></p>
+</body>
+
+</html>
